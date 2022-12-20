@@ -42,7 +42,6 @@ exports.__esModule = true;
 exports.GlueStackPlugin = void 0;
 var package_json_1 = __importDefault(require("../package.json"));
 var PluginInstance_1 = require("./PluginInstance");
-var spawn = require("child_process").spawn;
 var GlueStackPlugin = (function () {
     function GlueStackPlugin(app, gluePluginStore) {
         this.app = app;
@@ -67,7 +66,9 @@ var GlueStackPlugin = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4, this.app.createPluginInstance(this, instanceName, this.getTemplateFolderPath(), target)];
-                    case 1: return [2, _a.sent()];
+                    case 1:
+                        _a.sent();
+                        return [2];
                 }
             });
         });
