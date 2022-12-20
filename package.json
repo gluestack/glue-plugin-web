@@ -1,6 +1,6 @@
 {
   "name": "@gluestack/glue-plugin-web",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "web plugin for gluestack",
   "repository": {
     "type": "git",
@@ -13,7 +13,7 @@
   "author": "Prashant Tiwari",
   "license": "ISC",
   "dependencies": {
-    "@gluestack/framework": "^0.0.14",
+    "@gluestack/framework": "^0.0.15",
     "@types/node": "^18.11.17"
   },
   "main": "dist/src/index.js",
@@ -22,10 +22,10 @@
     "plugin-build": "tsc"
   },
   "devDependencies": {
-    "@gluestack/framework": "^0.0.14",
+    "@gluestack/framework": "^0.0.15",
     "typescript": "^4.9.4"
   },
   "peerDependencies": {
-    "@gluestack/framework": "^0.0.14"
+    "@gluestack/framework": "^0.0.15"
   }
 }
