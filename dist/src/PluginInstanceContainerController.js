@@ -54,7 +54,7 @@ var PluginInstanceContainerController = (function () {
     };
     PluginInstanceContainerController.prototype.getDockerJson = function () {
         return {
-            name: "MY_NAME"
+            "name": "MY_NAME"
         };
     };
     PluginInstanceContainerController.prototype.getStatus = function () {
@@ -82,34 +82,18 @@ var PluginInstanceContainerController = (function () {
     PluginInstanceContainerController.prototype.up = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!(this.getStatus() !== "up")) return [3, 2];
-                        return [4, new Promise(function (resolve, reject) {
-                                return resolve(true);
-                            })];
-                    case 1:
-                        _a.sent();
-                        _a.label = 2;
-                    case 2: return [2];
-                }
+                return [2, new Promise(function (resolve, reject) {
+                        return resolve(true);
+                    })];
             });
         });
     };
     PluginInstanceContainerController.prototype.down = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!(this.getStatus() !== "down")) return [3, 2];
-                        return [4, new Promise(function (resolve, reject) {
-                                return resolve(true);
-                            })];
-                    case 1:
-                        _a.sent();
-                        _a.label = 2;
-                    case 2: return [2];
-                }
+                return [2, new Promise(function (resolve, reject) {
+                        return resolve(true);
+                    })];
             });
         });
     };
