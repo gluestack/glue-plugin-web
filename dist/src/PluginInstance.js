@@ -8,8 +8,8 @@ var PluginInstance = (function () {
         this.app = app;
         this.name = name;
         this.callerPlugin = callerPlugin;
-        this.containerController = new PluginInstanceContainerController_1.PluginInstanceContainerController(app, this);
         this.gluePluginStore = gluePluginStore;
+        this.containerController = new PluginInstanceContainerController_1.PluginInstanceContainerController(app, this);
     }
     PluginInstance.prototype.init = function () {
     };
