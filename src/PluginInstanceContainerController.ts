@@ -1,4 +1,4 @@
-const { NodemonHelper, DockerodeHelper } = require("@gluestack/helpers");
+const { SpawnHelper, DockerodeHelper } = require("@gluestack/helpers");
 import IApp from "@gluestack/framework/types/app/interface/IApp";
 import IInstance from "@gluestack/framework/types/plugin/interface/IInstance";
 import IContainerController from "@gluestack/framework/types/plugin/interface/IContainerController";
@@ -82,13 +82,12 @@ export class PluginInstanceContainerController implements IContainerController {
   getConfig(): any {}
 
   async up() {
-    if (this.getStatus() != "up") {
+    if (this.getStatus() !== "up") {
       let ports =
         this.callerInstance.callerPlugin.gluePluginStore.get("ports") || [];
 
       await new Promise(async (resolve, reject) => {
         DockerodeHelper.getPort(this.getPortNumber(true), ports)
-
           .then((port: number) => {
             this.portNumber = port;
             console.log("\x1b[33m");
@@ -97,9 +96,8 @@ export class PluginInstanceContainerController implements IContainerController {
                 " ",
               )}`,
             );
-            NodemonHelper.up(
+            SpawnHelper.run(
               this.callerInstance.getInstallationPath(),
-              this.portNumber,
               this.installScript(),
             )
               .then(() => {
@@ -109,37 +107,26 @@ export class PluginInstanceContainerController implements IContainerController {
                   )}`,
                 );
                 console.log("\x1b[0m");
-                NodemonHelper.up(
+                SpawnHelper.start(
                   this.callerInstance.getInstallationPath(),
-                  this.portNumber,
                   this.runScript(),
                 )
-                  .then(
-                    ({
-                      status,
-                      portNumber,
-                      processId,
-                    }: {
-                      status: "up" | "down";
-                      portNumber: number;
-                      processId: string;
-                    }) => {
-                      this.setStatus(status);
-                      this.setPortNumber(portNumber);
-                      this.setContainerId(processId);
-                      ports.push(portNumber);
-                      this.callerInstance.callerPlugin.gluePluginStore.set(
-                        "ports",
-                        ports,
-                      );
-                      console.log("\x1b[32m");
-                      console.log(
-                        `Open http://localhost:${this.getPortNumber()}/ in browser`,
-                      );
-                      console.log("\x1b[0m");
-                      return resolve(true);
-                    },
-                  )
+                  .then(({ processId }: { processId: string }) => {
+                    this.setStatus("up");
+                    this.setPortNumber(this.portNumber);
+                    this.setContainerId(processId);
+                    ports.push(this.portNumber);
+                    this.callerInstance.callerPlugin.gluePluginStore.set(
+                      "ports",
+                      ports,
+                    );
+                    console.log("\x1b[32m");
+                    console.log(
+                      `Open http://localhost:${this.getPortNumber()}/ in browser`,
+                    );
+                    console.log("\x1b[0m");
+                    return resolve(true);
+                  })
                   .catch((e: any) => {
                     return reject(e);
                   });
@@ -156,11 +143,11 @@ export class PluginInstanceContainerController implements IContainerController {
   }
 
   async down() {
-    if (this.getStatus() == "up") {
+    if (this.getStatus() !== "down") {
       let ports =
         this.callerInstance.callerPlugin.gluePluginStore.get("ports") || [];
       await new Promise(async (resolve, reject) => {
-        NodemonHelper.down(this.getContainerId(), this.callerInstance.getName())
+        SpawnHelper.stop(this.getContainerId())
           .then(() => {
             this.setStatus("down");
             var index = ports.indexOf(this.getPortNumber());

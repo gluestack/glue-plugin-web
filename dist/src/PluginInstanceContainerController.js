@@ -37,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.PluginInstanceContainerController = void 0;
-var _a = require("@gluestack/helpers"), NodemonHelper = _a.NodemonHelper, DockerodeHelper = _a.DockerodeHelper;
+var _a = require("@gluestack/helpers"), SpawnHelper = _a.SpawnHelper, DockerodeHelper = _a.DockerodeHelper;
 var PluginInstanceContainerController = (function () {
     function PluginInstanceContainerController(app, callerInstance) {
         this.status = "down";
@@ -98,7 +98,7 @@ var PluginInstanceContainerController = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!(this.getStatus() != "up")) return [3, 2];
+                        if (!(this.getStatus() !== "up")) return [3, 2];
                         ports_1 = this.callerInstance.callerPlugin.gluePluginStore.get("ports") || [];
                         return [4, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
                                 var _this = this;
@@ -108,17 +108,17 @@ var PluginInstanceContainerController = (function () {
                                         _this.portNumber = port;
                                         console.log("\x1b[33m");
                                         console.log("".concat(_this.callerInstance.getName(), ": Running ").concat(_this.installScript().join(" ")));
-                                        NodemonHelper.up(_this.callerInstance.getInstallationPath(), _this.portNumber, _this.installScript())
+                                        SpawnHelper.run(_this.callerInstance.getInstallationPath(), _this.installScript())
                                             .then(function () {
                                             console.log("".concat(_this.callerInstance.getName(), ": Running ").concat(_this.runScript().join(" ")));
                                             console.log("\x1b[0m");
-                                            NodemonHelper.up(_this.callerInstance.getInstallationPath(), _this.portNumber, _this.runScript())
+                                            SpawnHelper.start(_this.callerInstance.getInstallationPath(), _this.runScript())
                                                 .then(function (_a) {
-                                                var status = _a.status, portNumber = _a.portNumber, processId = _a.processId;
-                                                _this.setStatus(status);
-                                                _this.setPortNumber(portNumber);
+                                                var processId = _a.processId;
+                                                _this.setStatus("up");
+                                                _this.setPortNumber(_this.portNumber);
                                                 _this.setContainerId(processId);
-                                                ports_1.push(portNumber);
+                                                ports_1.push(_this.portNumber);
                                                 _this.callerInstance.callerPlugin.gluePluginStore.set("ports", ports_1);
                                                 console.log("\x1b[32m");
                                                 console.log("Open http://localhost:".concat(_this.getPortNumber(), "/ in browser"));
@@ -151,12 +151,12 @@ var PluginInstanceContainerController = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!(this.getStatus() == "up")) return [3, 2];
+                        if (!(this.getStatus() !== "down")) return [3, 2];
                         ports_2 = this.callerInstance.callerPlugin.gluePluginStore.get("ports") || [];
                         return [4, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
                                 var _this = this;
                                 return __generator(this, function (_a) {
-                                    NodemonHelper.down(this.getContainerId(), this.callerInstance.getName())
+                                    SpawnHelper.stop(this.getContainerId())
                                         .then(function () {
                                         _this.setStatus("down");
                                         var index = ports_2.indexOf(_this.getPortNumber());
