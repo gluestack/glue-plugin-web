@@ -27,7 +27,11 @@ export class PluginInstanceContainerController implements IContainerController {
 
   getEnv() {}
 
-  getCommanderArray() {
+  installScript() {
+    return ["npm", "install"];
+  }
+
+  runScript() {
     return ["npm", "run", "dev", "--", "-p", this.getPortNumber()];
   }
 
@@ -87,37 +91,59 @@ export class PluginInstanceContainerController implements IContainerController {
 
           .then((port: number) => {
             this.portNumber = port;
+            console.log("\x1b[33m");
+            console.log(
+              `${this.callerInstance.getName()}: Running ${this.installScript().join(
+                " ",
+              )}`,
+            );
             NodemonHelper.up(
               this.callerInstance.getInstallationPath(),
               this.portNumber,
-              this.getCommanderArray(),
+              this.installScript(),
             )
-              .then(
-                ({
-                  status,
-                  portNumber,
-                  processId,
-                }: {
-                  status: "up" | "down";
-                  portNumber: number;
-                  processId: string;
-                }) => {
-                  this.setStatus(status);
-                  this.setPortNumber(portNumber);
-                  this.setContainerId(processId);
-                  ports.push(portNumber);
-                  this.callerInstance.callerPlugin.gluePluginStore.set(
-                    "ports",
-                    ports,
-                  );
-                  console.log("\x1b[32m");
-                  console.log(
-                    `Open http://localhost:${this.getPortNumber()}/ in browser`,
-                  );
-                  console.log("\x1b[0m");
-                  return resolve(true);
-                },
-              )
+              .then(() => {
+                console.log(
+                  `${this.callerInstance.getName()}: Running ${this.runScript().join(
+                    " ",
+                  )}`,
+                );
+                console.log("\x1b[0m");
+                NodemonHelper.up(
+                  this.callerInstance.getInstallationPath(),
+                  this.portNumber,
+                  this.runScript(),
+                )
+                  .then(
+                    ({
+                      status,
+                      portNumber,
+                      processId,
+                    }: {
+                      status: "up" | "down";
+                      portNumber: number;
+                      processId: string;
+                    }) => {
+                      this.setStatus(status);
+                      this.setPortNumber(portNumber);
+                      this.setContainerId(processId);
+                      ports.push(portNumber);
+                      this.callerInstance.callerPlugin.gluePluginStore.set(
+                        "ports",
+                        ports,
+                      );
+                      console.log("\x1b[32m");
+                      console.log(
+                        `Open http://localhost:${this.getPortNumber()}/ in browser`,
+                      );
+                      console.log("\x1b[0m");
+                      return resolve(true);
+                    },
+                  )
+                  .catch((e: any) => {
+                    return reject(e);
+                  });
+              })
               .catch((e: any) => {
                 return reject(e);
               });

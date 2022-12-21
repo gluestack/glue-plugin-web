@@ -51,7 +51,10 @@ var PluginInstanceContainerController = (function () {
         return this.callerInstance;
     };
     PluginInstanceContainerController.prototype.getEnv = function () { };
-    PluginInstanceContainerController.prototype.getCommanderArray = function () {
+    PluginInstanceContainerController.prototype.installScript = function () {
+        return ["npm", "install"];
+    };
+    PluginInstanceContainerController.prototype.runScript = function () {
         return ["npm", "run", "dev", "--", "-p", this.getPortNumber()];
     };
     PluginInstanceContainerController.prototype.getDockerJson = function () {
@@ -103,18 +106,27 @@ var PluginInstanceContainerController = (function () {
                                     DockerodeHelper.getPort(this.getPortNumber(true), ports_1)
                                         .then(function (port) {
                                         _this.portNumber = port;
-                                        NodemonHelper.up(_this.callerInstance.getInstallationPath(), _this.portNumber, _this.getCommanderArray())
-                                            .then(function (_a) {
-                                            var status = _a.status, portNumber = _a.portNumber, processId = _a.processId;
-                                            _this.setStatus(status);
-                                            _this.setPortNumber(portNumber);
-                                            _this.setContainerId(processId);
-                                            ports_1.push(portNumber);
-                                            _this.callerInstance.callerPlugin.gluePluginStore.set("ports", ports_1);
-                                            console.log("\x1b[32m");
-                                            console.log("Open http://localhost:".concat(_this.getPortNumber(), "/ in browser"));
+                                        console.log("\x1b[33m");
+                                        console.log("".concat(_this.callerInstance.getName(), ": Running ").concat(_this.installScript().join(" ")));
+                                        NodemonHelper.up(_this.callerInstance.getInstallationPath(), _this.portNumber, _this.installScript())
+                                            .then(function () {
+                                            console.log("".concat(_this.callerInstance.getName(), ": Running ").concat(_this.runScript().join(" ")));
                                             console.log("\x1b[0m");
-                                            return resolve(true);
+                                            NodemonHelper.up(_this.callerInstance.getInstallationPath(), _this.portNumber, _this.runScript())
+                                                .then(function (_a) {
+                                                var status = _a.status, portNumber = _a.portNumber, processId = _a.processId;
+                                                _this.setStatus(status);
+                                                _this.setPortNumber(portNumber);
+                                                _this.setContainerId(processId);
+                                                ports_1.push(portNumber);
+                                                _this.callerInstance.callerPlugin.gluePluginStore.set("ports", ports_1);
+                                                console.log("\x1b[32m");
+                                                console.log("Open http://localhost:".concat(_this.getPortNumber(), "/ in browser"));
+                                                console.log("\x1b[0m");
+                                                return resolve(true);
+                                            })["catch"](function (e) {
+                                                return reject(e);
+                                            });
                                         })["catch"](function (e) {
                                             return reject(e);
                                         });
