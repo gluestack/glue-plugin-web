@@ -1,8 +1,7 @@
+const { NodemonHelper, DockerodeHelper } = require("@gluestack/helpers");
 import IApp from "@gluestack/framework/types/app/interface/IApp";
 import IInstance from "@gluestack/framework/types/plugin/interface/IInstance";
 import IContainerController from "@gluestack/framework/types/plugin/interface/IContainerController";
-
-import { generateDockerfile } from "./create-dockerfile";
 
 export class PluginInstanceContainerController implements IContainerController {
   app: IApp;
@@ -26,14 +25,14 @@ export class PluginInstanceContainerController implements IContainerController {
     return this.callerInstance;
   }
 
-  getEnv() {
-    return "MY_VAR=5";
+  getEnv() {}
+
+  getCommanderArray() {
+    return ["npm", "run", "dev", "--", "-p", this.getPortNumber()];
   }
 
   getDockerJson() {
-    return {
-      name: "MY_NAME",
-    };
+    return {};
   }
 
   getStatus(): "up" | "down" {
@@ -45,7 +44,7 @@ export class PluginInstanceContainerController implements IContainerController {
       return this.portNumber;
     }
     if (returnDefault) {
-      return 5432;
+      return 3100;
     }
   }
 
@@ -79,24 +78,84 @@ export class PluginInstanceContainerController implements IContainerController {
   getConfig(): any {}
 
   async up() {
-    return new Promise((resolve, reject) => {
-      // this.setStatus('up');
-      // this.setPortNumber(portNumber);
-      // this.setContainerId(containerId);
-      return resolve(true);
-    });
+    if (this.getStatus() != "up") {
+      let ports =
+        this.callerInstance.callerPlugin.gluePluginStore.get("ports") || [];
+
+      await new Promise(async (resolve, reject) => {
+        DockerodeHelper.getPort(this.getPortNumber(true), ports)
+
+          .then((port: number) => {
+            this.portNumber = port;
+            NodemonHelper.up(
+              this.callerInstance.getInstallationPath(),
+              this.portNumber,
+              this.getCommanderArray(),
+            )
+              .then(
+                ({
+                  status,
+                  portNumber,
+                  processId,
+                }: {
+                  status: "up" | "down";
+                  portNumber: number;
+                  processId: string;
+                }) => {
+                  this.setStatus(status);
+                  this.setPortNumber(portNumber);
+                  this.setContainerId(processId);
+                  ports.push(portNumber);
+                  this.callerInstance.callerPlugin.gluePluginStore.set(
+                    "ports",
+                    ports,
+                  );
+                  console.log("\x1b[32m");
+                  console.log(
+                    `Open http://localhost:${this.getPortNumber()}/ in browser`,
+                  );
+                  console.log("\x1b[0m");
+                  return resolve(true);
+                },
+              )
+              .catch((e: any) => {
+                return reject(e);
+              });
+          })
+          .catch((e: any) => {
+            return reject(e);
+          });
+      });
+    }
   }
 
   async down() {
-    return new Promise((resolve, reject) => {
-      // this.setStatus('down');
-      // this.setPortNumber(null);
-      // this.setContainerId(null);
-      return resolve(true);
-    });
+    if (this.getStatus() == "up") {
+      let ports =
+        this.callerInstance.callerPlugin.gluePluginStore.get("ports") || [];
+      await new Promise(async (resolve, reject) => {
+        NodemonHelper.down(this.getContainerId(), this.callerInstance.getName())
+          .then(() => {
+            this.setStatus("down");
+            var index = ports.indexOf(this.getPortNumber());
+            if (index !== -1) {
+              ports.splice(index, 1);
+            }
+            this.callerInstance.callerPlugin.gluePluginStore.set(
+              "ports",
+              ports,
+            );
+
+            this.setPortNumber(null);
+            this.setContainerId(null);
+            return resolve(true);
+          })
+          .catch((e: any) => {
+            return reject(e);
+          });
+      });
+    }
   }
 
-  async build() {
-    await generateDockerfile(this.callerInstance.getInstallationPath());
-  }
+  async build() {}
 }
