@@ -1,6 +1,6 @@
 {
     "name": "@gluestack/glue-plugin-web",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "description": "web plugin for gluestack",
     "repository": {
         "type": "git",
@@ -14,7 +14,8 @@
     "license": "ISC",
     "dependencies": {
         "@gluestack/framework": "^0.0.14",
-        "@types/node": "^18.11.17"
+        "@types/node": "^18.11.17",
+        "@gluestack/helpers": "^0.0.3"
     },
     "main": "dist/src/index.js",
     "scripts": {
@@ -23,9 +24,11 @@
     },
     "devDependencies": {
         "@gluestack/framework": "^0.0.14",
-        "typescript": "^4.9.4"
+        "typescript": "^4.9.4",
+        "@gluestack/helpers": "^0.0.3"
     },
     "peerDependencies": {
-        "@gluestack/framework": "^0.0.14"
+        "@gluestack/framework": "^0.0.14",
+        "@gluestack/helpers": "^0.0.3"
     }
 }

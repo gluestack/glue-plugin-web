@@ -37,78 +37,142 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.PluginInstanceContainerController = void 0;
-var create_dockerfile_1 = require("./create-dockerfile");
+var _a = require("@gluestack/helpers"), NodemonHelper = _a.NodemonHelper, DockerodeHelper = _a.DockerodeHelper;
 var PluginInstanceContainerController = (function () {
     function PluginInstanceContainerController(app, callerInstance) {
-        this.status = 'down';
+        this.status = "down";
         this.app = app;
         this.callerInstance = callerInstance;
-        this.setStatus(this.callerInstance.gluePluginStore.get('status'));
-        this.setPortNumber(this.callerInstance.gluePluginStore.get('port_number'));
-        this.setContainerId(this.callerInstance.gluePluginStore.get('container_id'));
+        this.setStatus(this.callerInstance.gluePluginStore.get("status"));
+        this.setPortNumber(this.callerInstance.gluePluginStore.get("port_number"));
+        this.setContainerId(this.callerInstance.gluePluginStore.get("container_id"));
     }
     PluginInstanceContainerController.prototype.getCallerInstance = function () {
         return this.callerInstance;
     };
-    PluginInstanceContainerController.prototype.getEnv = function () {
-        return 'MY_VAR=5';
+    PluginInstanceContainerController.prototype.getEnv = function () { };
+    PluginInstanceContainerController.prototype.getCommanderArray = function () {
+        return ["npm", "run", "dev", "--", "-p", this.getPortNumber()];
     };
     PluginInstanceContainerController.prototype.getDockerJson = function () {
-        return {
-            'name': 'MY_NAME'
-        };
+        return {};
     };
     PluginInstanceContainerController.prototype.getStatus = function () {
         return this.status;
     };
-    PluginInstanceContainerController.prototype.getPortNumber = function () {
-        return this.portNumber;
+    PluginInstanceContainerController.prototype.getPortNumber = function (returnDefault) {
+        if (this.portNumber) {
+            return this.portNumber;
+        }
+        if (returnDefault) {
+            return 3100;
+        }
     };
     PluginInstanceContainerController.prototype.getContainerId = function () {
         return this.containerId;
     };
     PluginInstanceContainerController.prototype.setStatus = function (status) {
-        this.callerInstance.gluePluginStore.set('status', status || 'down');
-        return (this.status = status || 'down');
+        this.callerInstance.gluePluginStore.set("status", status || "down");
+        return (this.status = status || "down");
     };
     PluginInstanceContainerController.prototype.setPortNumber = function (portNumber) {
-        this.callerInstance.gluePluginStore.set('port_number', portNumber || null);
+        this.callerInstance.gluePluginStore.set("port_number", portNumber || null);
         return (this.portNumber = portNumber || null);
     };
     PluginInstanceContainerController.prototype.setContainerId = function (containerId) {
-        this.callerInstance.gluePluginStore.set('container_id', containerId || null);
+        this.callerInstance.gluePluginStore.set("container_id", containerId || null);
         return (this.containerId = containerId || null);
+    };
+    PluginInstanceContainerController.prototype.setDockerfile = function (dockerfile) {
+        this.callerInstance.gluePluginStore.set("dockerfile", dockerfile || null);
+        return (this.dockerfile = dockerfile || null);
     };
     PluginInstanceContainerController.prototype.getConfig = function () { };
     PluginInstanceContainerController.prototype.up = function () {
         return __awaiter(this, void 0, void 0, function () {
+            var ports_1;
+            var _this = this;
             return __generator(this, function (_a) {
-                return [2, new Promise(function (resolve, reject) {
-                        return resolve(true);
-                    })];
+                switch (_a.label) {
+                    case 0:
+                        if (!(this.getStatus() != "up")) return [3, 2];
+                        ports_1 = this.callerInstance.callerPlugin.gluePluginStore.get("ports") || [];
+                        return [4, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
+                                var _this = this;
+                                return __generator(this, function (_a) {
+                                    DockerodeHelper.getPort(this.getPortNumber(true), ports_1)
+                                        .then(function (port) {
+                                        _this.portNumber = port;
+                                        NodemonHelper.up(_this.callerInstance.getInstallationPath(), _this.portNumber, _this.getCommanderArray())
+                                            .then(function (_a) {
+                                            var status = _a.status, portNumber = _a.portNumber, processId = _a.processId;
+                                            _this.setStatus(status);
+                                            _this.setPortNumber(portNumber);
+                                            _this.setContainerId(processId);
+                                            ports_1.push(portNumber);
+                                            _this.callerInstance.callerPlugin.gluePluginStore.set("ports", ports_1);
+                                            console.log("\x1b[32m");
+                                            console.log("Open http://localhost:".concat(_this.getPortNumber(), "/ in browser"));
+                                            console.log("\x1b[0m");
+                                            return resolve(true);
+                                        })["catch"](function (e) {
+                                            return reject(e);
+                                        });
+                                    })["catch"](function (e) {
+                                        return reject(e);
+                                    });
+                                    return [2];
+                                });
+                            }); })];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2: return [2];
+                }
             });
         });
     };
     PluginInstanceContainerController.prototype.down = function () {
         return __awaiter(this, void 0, void 0, function () {
+            var ports_2;
+            var _this = this;
             return __generator(this, function (_a) {
-                return [2, new Promise(function (resolve, reject) {
-                        return resolve(true);
-                    })];
+                switch (_a.label) {
+                    case 0:
+                        if (!(this.getStatus() == "up")) return [3, 2];
+                        ports_2 = this.callerInstance.callerPlugin.gluePluginStore.get("ports") || [];
+                        return [4, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
+                                var _this = this;
+                                return __generator(this, function (_a) {
+                                    NodemonHelper.down(this.getContainerId(), this.callerInstance.getName())
+                                        .then(function () {
+                                        _this.setStatus("down");
+                                        var index = ports_2.indexOf(_this.getPortNumber());
+                                        if (index !== -1) {
+                                            ports_2.splice(index, 1);
+                                        }
+                                        _this.callerInstance.callerPlugin.gluePluginStore.set("ports", ports_2);
+                                        _this.setPortNumber(null);
+                                        _this.setContainerId(null);
+                                        return resolve(true);
+                                    })["catch"](function (e) {
+                                        return reject(e);
+                                    });
+                                    return [2];
+                                });
+                            }); })];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2: return [2];
+                }
             });
         });
     };
     PluginInstanceContainerController.prototype.build = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4, (0, create_dockerfile_1.generateDockerfile)(this.callerInstance.getInstallationPath())];
-                    case 1:
-                        _a.sent();
-                        return [2];
-                }
-            });
-        });
+        return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2];
+        }); });
     };
     return PluginInstanceContainerController;
 }());
