@@ -2,6 +2,7 @@ const { SpawnHelper, DockerodeHelper } = require("@gluestack/helpers");
 import IApp from "@gluestack/framework/types/app/interface/IApp";
 import IInstance from "@gluestack/framework/types/plugin/interface/IInstance";
 import IContainerController from "@gluestack/framework/types/plugin/interface/IContainerController";
+import { generateDockerfile } from "./create-dockerfile";
 
 export class PluginInstanceContainerController implements IContainerController {
   app: IApp;
@@ -170,5 +171,7 @@ export class PluginInstanceContainerController implements IContainerController {
     }
   }
 
-  async build() {}
+  async build() {
+    await generateDockerfile(this.callerInstance.getInstallationPath());
+  }
 }
