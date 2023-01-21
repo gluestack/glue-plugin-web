@@ -37,26 +37,26 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.PluginInstanceContainerController = void 0;
-var _a = require("@gluestack/helpers"), SpawnHelper = _a.SpawnHelper, DockerodeHelper = _a.DockerodeHelper;
+var _a = require('@gluestack/helpers'), SpawnHelper = _a.SpawnHelper, DockerodeHelper = _a.DockerodeHelper;
 var create_dockerfile_1 = require("./create-dockerfile");
 var PluginInstanceContainerController = (function () {
     function PluginInstanceContainerController(app, callerInstance) {
-        this.status = "down";
+        this.status = 'down';
         this.app = app;
         this.callerInstance = callerInstance;
-        this.setStatus(this.callerInstance.gluePluginStore.get("status"));
-        this.setPortNumber(this.callerInstance.gluePluginStore.get("port_number"));
-        this.setContainerId(this.callerInstance.gluePluginStore.get("container_id"));
+        this.setStatus(this.callerInstance.gluePluginStore.get('status'));
+        this.setPortNumber(this.callerInstance.gluePluginStore.get('port_number'));
+        this.setContainerId(this.callerInstance.gluePluginStore.get('container_id'));
     }
     PluginInstanceContainerController.prototype.getCallerInstance = function () {
         return this.callerInstance;
     };
     PluginInstanceContainerController.prototype.getEnv = function () { };
     PluginInstanceContainerController.prototype.installScript = function () {
-        return ["npm", "install"];
+        return ['npm', 'install', '--save', '--legacy-peer-deps'];
     };
     PluginInstanceContainerController.prototype.runScript = function () {
-        return ["npm", "run", "dev", "--", "-p", this.getPortNumber()];
+        return ['npm', 'run', 'dev', '--', '-p', this.getPortNumber()];
     };
     PluginInstanceContainerController.prototype.getDockerJson = function () {
         return {};
@@ -76,19 +76,19 @@ var PluginInstanceContainerController = (function () {
         return this.containerId;
     };
     PluginInstanceContainerController.prototype.setStatus = function (status) {
-        this.callerInstance.gluePluginStore.set("status", status || "down");
-        return (this.status = status || "down");
+        this.callerInstance.gluePluginStore.set('status', status || 'down');
+        return (this.status = status || 'down');
     };
     PluginInstanceContainerController.prototype.setPortNumber = function (portNumber) {
-        this.callerInstance.gluePluginStore.set("port_number", portNumber || null);
+        this.callerInstance.gluePluginStore.set('port_number', portNumber || null);
         return (this.portNumber = portNumber || null);
     };
     PluginInstanceContainerController.prototype.setContainerId = function (containerId) {
-        this.callerInstance.gluePluginStore.set("container_id", containerId || null);
+        this.callerInstance.gluePluginStore.set('container_id', containerId || null);
         return (this.containerId = containerId || null);
     };
     PluginInstanceContainerController.prototype.setDockerfile = function (dockerfile) {
-        this.callerInstance.gluePluginStore.set("dockerfile", dockerfile || null);
+        this.callerInstance.gluePluginStore.set('dockerfile', dockerfile || null);
         return (this.dockerfile = dockerfile || null);
     };
     PluginInstanceContainerController.prototype.getConfig = function () { };
@@ -99,31 +99,31 @@ var PluginInstanceContainerController = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!(this.getStatus() !== "up")) return [3, 2];
-                        ports_1 = this.callerInstance.callerPlugin.gluePluginStore.get("ports") || [];
+                        if (!(this.getStatus() !== 'up')) return [3, 2];
+                        ports_1 = this.callerInstance.callerPlugin.gluePluginStore.get('ports') || [];
                         return [4, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
                                 var _this = this;
                                 return __generator(this, function (_a) {
                                     DockerodeHelper.getPort(this.getPortNumber(true), ports_1)
                                         .then(function (port) {
                                         _this.portNumber = port;
-                                        console.log("\x1b[33m");
-                                        console.log("".concat(_this.callerInstance.getName(), ": Running ").concat(_this.installScript().join(" ")));
+                                        console.log('\x1b[33m');
+                                        console.log("".concat(_this.callerInstance.getName(), ": Running ").concat(_this.installScript().join(' ')));
                                         SpawnHelper.run(_this.callerInstance.getInstallationPath(), _this.installScript())
                                             .then(function () {
-                                            console.log("".concat(_this.callerInstance.getName(), ": Running ").concat(_this.runScript().join(" ")));
-                                            console.log("\x1b[0m");
+                                            console.log("".concat(_this.callerInstance.getName(), ": Running ").concat(_this.runScript().join(' ')));
+                                            console.log('\x1b[0m');
                                             SpawnHelper.start(_this.callerInstance.getInstallationPath(), _this.runScript())
                                                 .then(function (_a) {
                                                 var processId = _a.processId;
-                                                _this.setStatus("up");
+                                                _this.setStatus('up');
                                                 _this.setPortNumber(_this.portNumber);
                                                 _this.setContainerId(processId);
                                                 ports_1.push(_this.portNumber);
-                                                _this.callerInstance.callerPlugin.gluePluginStore.set("ports", ports_1);
-                                                console.log("\x1b[32m");
+                                                _this.callerInstance.callerPlugin.gluePluginStore.set('ports', ports_1);
+                                                console.log('\x1b[32m');
                                                 console.log("Open http://localhost:".concat(_this.getPortNumber(), "/ in browser"));
-                                                console.log("\x1b[0m");
+                                                console.log('\x1b[0m');
                                                 return resolve(true);
                                             })["catch"](function (e) {
                                                 return reject(e);
@@ -152,19 +152,19 @@ var PluginInstanceContainerController = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!(this.getStatus() !== "down")) return [3, 2];
-                        ports_2 = this.callerInstance.callerPlugin.gluePluginStore.get("ports") || [];
+                        if (!(this.getStatus() !== 'down')) return [3, 2];
+                        ports_2 = this.callerInstance.callerPlugin.gluePluginStore.get('ports') || [];
                         return [4, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
                                 var _this = this;
                                 return __generator(this, function (_a) {
                                     SpawnHelper.stop(this.getContainerId())
                                         .then(function () {
-                                        _this.setStatus("down");
+                                        _this.setStatus('down');
                                         var index = ports_2.indexOf(_this.getPortNumber());
                                         if (index !== -1) {
                                             ports_2.splice(index, 1);
                                         }
-                                        _this.callerInstance.callerPlugin.gluePluginStore.set("ports", ports_2);
+                                        _this.callerInstance.callerPlugin.gluePluginStore.set('ports', ports_2);
                                         _this.setPortNumber(null);
                                         _this.setContainerId(null);
                                         return resolve(true);

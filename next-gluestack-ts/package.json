@@ -7,7 +7,7 @@
     "web",
     "app-service",
     "next",
-    "gluestack-ui"
+    "gluestack/ui"
   ],
   "author": "Mayank Pagar",
   "license": "ISC",

@@ -77,7 +77,6 @@ var GlueStackPlugin = (function () {
                     case 0: return [4, (0, selectTemplate_1.selectTemplate)()];
                     case 1:
                         templateFolder = _a.sent();
-                        console.log(templateFolder);
                         this.selectedTemplateFolderPath = templateFolder;
                         return [4, this.app.createPluginInstance(this, instanceName, this.getTemplateFolderPath(), target)];
                     case 2:

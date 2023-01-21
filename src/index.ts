@@ -55,7 +55,6 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
 
   async runPostInstall(instanceName: string, target: string) {
     const templateFolder = await selectTemplate();
-    console.log(templateFolder);
     this.selectedTemplateFolderPath = templateFolder;
     await this.app.createPluginInstance(
       this,
