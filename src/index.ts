@@ -7,8 +7,7 @@ import IInstance from '@gluestack/framework/types/plugin/interface/IInstance';
 import ILifeCycle from '@gluestack/framework/types/plugin/interface/ILifeCycle';
 import IManagesInstances from '@gluestack/framework/types/plugin/interface/IManagesInstances';
 import IGlueStorePlugin from '@gluestack/framework/types/store/interface/IGluePluginStore';
-// import { selectTemplate } from './helpers/selectTemplate';
-
+import { selectTemplate } from './helpers/selectTemplate';
 //Do not edit the name of this class
 export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
   app: IApp;
@@ -43,8 +42,9 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
   }
 
   // @ts-ignore
-  async getTemplateFolderPath(): string {
+  getTemplateFolderPath(): string {
     return `${process.cwd()}/node_modules/${this.getName()}/template`;
+    // return `${process.cwd()}/node_modules/${this.getName()}/${templateFolder}`;
   }
 
   getInstallationPath(target: string): string {
@@ -52,6 +52,9 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
   }
 
   async runPostInstall(instanceName: string, target: string) {
+    const templateFolder = await selectTemplate();
+    console.log(templateFolder);
+
     await this.app.createPluginInstance(
       this,
       instanceName,
