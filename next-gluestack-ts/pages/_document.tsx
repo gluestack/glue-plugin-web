@@ -14,7 +14,7 @@ class Document extends ExpoDocument {
             rel='preconnect'
             href='https://fonts.gstatic.com'
             // @ts-ignore
-            crossorigin
+            crossOrigin='true'
           />
           {/* plus jakarta sans font */}
           <link
