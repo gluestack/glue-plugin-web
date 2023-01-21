@@ -43,7 +43,7 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
 
   // @ts-ignore
   getTemplateFolderPath(): string {
-    return `${process.cwd()}/node_modules/${this.getName()}/template`;
+    return `${process.cwd()}/node_modules/${this.getName()}/next-ts`;
     // return `${process.cwd()}/node_modules/${this.getName()}/${templateFolder}`;
   }
 
