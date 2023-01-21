@@ -14,7 +14,7 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
   instances: IInstance[];
   type: 'stateless' | 'stateful' | 'devonly' = 'stateless';
   gluePluginStore: IGlueStorePlugin;
-
+  selectedTemplateFolderPath: string;
   constructor(app: IApp, gluePluginStore: IGlueStorePlugin) {
     this.app = app;
     this.instances = [];
@@ -43,7 +43,9 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
 
   // @ts-ignore
   getTemplateFolderPath(): string {
-    return `${process.cwd()}/node_modules/${this.getName()}/next-ts`;
+    return `${process.cwd()}/node_modules/${this.getName()}/${
+      this.selectedTemplateFolderPath
+    }`;
     // return `${process.cwd()}/node_modules/${this.getName()}/${templateFolder}`;
   }
 
@@ -54,7 +56,7 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
   async runPostInstall(instanceName: string, target: string) {
     const templateFolder = await selectTemplate();
     console.log(templateFolder);
-
+    this.selectedTemplateFolderPath = templateFolder;
     await this.app.createPluginInstance(
       this,
       instanceName,

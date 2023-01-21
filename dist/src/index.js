@@ -64,7 +64,7 @@ var GlueStackPlugin = (function () {
         return this.type;
     };
     GlueStackPlugin.prototype.getTemplateFolderPath = function () {
-        return "".concat(process.cwd(), "/node_modules/").concat(this.getName(), "/next-ts");
+        return "".concat(process.cwd(), "/node_modules/").concat(this.getName(), "/").concat(this.selectedTemplateFolderPath);
     };
     GlueStackPlugin.prototype.getInstallationPath = function (target) {
         return "./".concat(target);
@@ -78,6 +78,7 @@ var GlueStackPlugin = (function () {
                     case 1:
                         templateFolder = _a.sent();
                         console.log(templateFolder);
+                        this.selectedTemplateFolderPath = templateFolder;
                         return [4, this.app.createPluginInstance(this, instanceName, this.getTemplateFolderPath(), target)];
                     case 2:
                         _a.sent();
