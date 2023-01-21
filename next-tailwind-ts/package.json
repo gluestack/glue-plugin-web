@@ -1,5 +1,16 @@
 {
+  "name": "@gluestack/next-tailwind-ts",
+  "version": "0.1.0",
+  "description": "Next app configured with tailwind",
   "private": true,
+  "keywords": [
+    "web",
+    "app-service",
+    "next",
+    "tailwind"
+  ],
+  "author": "Mayank Pagar",
+  "license": "ISC",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

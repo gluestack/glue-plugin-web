@@ -1,7 +1,16 @@
 {
-  "name": "next-website",
+  "name": "@gluestack/next-gluestack-ts",
   "version": "0.1.0",
+  "description": "Next app for GlueStack framework",
   "private": true,
+  "keywords": [
+    "web",
+    "app-service",
+    "next",
+    "gluestack-ui"
+  ],
+  "author": "Mayank Pagar",
+  "license": "ISC",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

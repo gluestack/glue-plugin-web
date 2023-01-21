@@ -1,7 +1,15 @@
 {
-  "name": "next-typescript",
+  "name": "@gluestack/next-ts",
   "version": "0.1.0",
+  "description": "Next app",
   "private": true,
+  "keywords": [
+    "web",
+    "app-service",
+    "next"
+  ],
+  "author": "Mayank Pagar",
+  "license": "ISC",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
