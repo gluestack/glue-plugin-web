@@ -1,6 +1,6 @@
 {
   "name": "@gluestack/glue-plugin-web",
-  "version": "0.1.10-alpha.4",
+  "version": "0.1.10-alpha.5",
   "description": "web plugin for gluestack",
   "repository": {
     "type": "git",
