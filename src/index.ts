@@ -42,9 +42,11 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
   }
 
   // @ts-ignore
-  getTemplateFolderPath(): string {
-    return `${process.cwd()}/node_modules/${this.getName()}/template`;
-    // return `${process.cwd()}/node_modules/${this.getName()}/${templateFolder}`;
+  async getTemplateFolderPath(): string {
+    const templateFolder = await selectTemplate();
+
+    // return `${process.cwd()}/node_modules/${this.getName()}/template`;
+    return `${process.cwd()}/node_modules/${this.getName()}/${templateFolder}`;
   }
 
   getInstallationPath(target: string): string {
@@ -52,9 +54,6 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
   }
 
   async runPostInstall(instanceName: string, target: string) {
-    const templateFolder = await selectTemplate();
-    console.log(templateFolder);
-
     await this.app.createPluginInstance(
       this,
       instanceName,

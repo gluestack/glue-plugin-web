@@ -64,12 +64,6 @@ var GlueStackPlugin = (function () {
         return this.type;
     };
     GlueStackPlugin.prototype.getTemplateFolderPath = function () {
-        return "".concat(process.cwd(), "/node_modules/").concat(this.getName(), "/template");
-    };
-    GlueStackPlugin.prototype.getInstallationPath = function (target) {
-        return "./".concat(target);
-    };
-    GlueStackPlugin.prototype.runPostInstall = function (instanceName, target) {
         return __awaiter(this, void 0, void 0, function () {
             var templateFolder;
             return __generator(this, function (_a) {
@@ -77,9 +71,20 @@ var GlueStackPlugin = (function () {
                     case 0: return [4, (0, selectTemplate_1.selectTemplate)()];
                     case 1:
                         templateFolder = _a.sent();
-                        console.log(templateFolder);
-                        return [4, this.app.createPluginInstance(this, instanceName, this.getTemplateFolderPath(), target)];
-                    case 2:
+                        return [2, "".concat(process.cwd(), "/node_modules/").concat(this.getName(), "/").concat(templateFolder)];
+                }
+            });
+        });
+    };
+    GlueStackPlugin.prototype.getInstallationPath = function (target) {
+        return "./".concat(target);
+    };
+    GlueStackPlugin.prototype.runPostInstall = function (instanceName, target) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, this.app.createPluginInstance(this, instanceName, this.getTemplateFolderPath(), target)];
+                    case 1:
                         _a.sent();
                         return [2];
                 }
