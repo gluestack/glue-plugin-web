@@ -65,7 +65,7 @@ var GlueStackPlugin = (function () {
     GlueStackPlugin.prototype.getTemplateFolderPath = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2, "".concat(process.cwd(), "/node_modules/").concat(this.getName(), "/next-ts")];
+                return [2, "".concat(process.cwd(), "/node_modules/").concat(this.getName(), "/template")];
             });
         });
     };
