@@ -45,12 +45,20 @@ export class PluginInstanceContainerController implements IContainerController {
   }
 
   getPortNumber(returnDefault?: boolean): number {
+    let portNumber: number;
+    let ports =
+      this.callerInstance.callerPlugin.gluePluginStore.get('ports') || [];
+
     if (this.portNumber) {
-      return this.portNumber;
+      portNumber = this.portNumber;
+    } else {
+      portNumber = 3100;
     }
-    if (returnDefault) {
-      return 3100;
-    }
+
+    ports.push(this.portNumber);
+    this.callerInstance.callerPlugin.gluePluginStore.set('ports', ports);
+
+    return portNumber;
   }
 
   getContainerId(): string {

@@ -65,12 +65,17 @@ var PluginInstanceContainerController = (function () {
         return this.status;
     };
     PluginInstanceContainerController.prototype.getPortNumber = function (returnDefault) {
+        var portNumber;
+        var ports = this.callerInstance.callerPlugin.gluePluginStore.get('ports') || [];
         if (this.portNumber) {
-            return this.portNumber;
+            portNumber = this.portNumber;
         }
-        if (returnDefault) {
-            return 3100;
+        else {
+            portNumber = 3100;
         }
+        ports.push(this.portNumber);
+        this.callerInstance.callerPlugin.gluePluginStore.set('ports', ports);
+        return portNumber;
     };
     PluginInstanceContainerController.prototype.getContainerId = function () {
         return this.containerId;
