@@ -10,7 +10,7 @@
  */
 module.exports = () => [
   {
-    path: '/',
+    path: '/web',
     proxy: {
       path: '/',
     },
