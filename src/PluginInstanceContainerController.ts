@@ -32,8 +32,8 @@ export class PluginInstanceContainerController implements IContainerController {
     return ['npm', 'install', '--save', '--legacy-peer-deps'];
   }
 
-  runScript() {
-    return ['npm', 'run', 'dev', '--', '-p', this.getPortNumber()];
+  async runScript() {
+    return ['npm', 'run', 'dev', '--', '-p', await this.getPortNumber()];
   }
 
   getDockerJson() {
@@ -43,23 +43,28 @@ export class PluginInstanceContainerController implements IContainerController {
   getStatus(): 'up' | 'down' {
     return this.status;
   }
-
-  getPortNumber(returnDefault?: boolean): number {
-    let portNumber: number;
-    let ports =
-      this.callerInstance.callerPlugin.gluePluginStore.get('ports') || [];
-
-    if (this.portNumber) {
-      portNumber = this.portNumber;
-    } else {
-      portNumber = 3100;
-    }
-
-    ports.push(this.portNumber);
-    this.callerInstance.callerPlugin.gluePluginStore.set('ports', ports);
-
-    return portNumber;
+  
+  //@ts-ignore
+  async getPortNumber(returnDefault?: boolean) {
+    return new Promise((resolve, reject) => {
+      if (this.portNumber) {
+        return resolve(this.portNumber);
+      }
+      let ports =
+        this.callerInstance.callerPlugin.gluePluginStore.get("ports") || [];
+      DockerodeHelper.getPort(3100, ports)
+        .then((port: number) => {
+          this.setPortNumber(port);
+          ports.push(port);
+          this.callerInstance.callerPlugin.gluePluginStore.set("ports", ports);
+          return resolve(this.portNumber);
+        })
+        .catch((e: any) => {
+          reject(e);
+        });
+    });
   }
+
 
   getContainerId(): string {
     return this.containerId;
@@ -92,53 +97,37 @@ export class PluginInstanceContainerController implements IContainerController {
 
   async up() {
     if (this.getStatus() !== 'up') {
-      let ports =
-        this.callerInstance.callerPlugin.gluePluginStore.get('ports') || [];
-
       await new Promise(async (resolve, reject) => {
-        DockerodeHelper.getPort(this.getPortNumber(true), ports)
-          .then((port: number) => {
-            this.portNumber = port;
-            console.log('\x1b[33m');
+        console.log('\x1b[33m');
+        console.log(
+          `${this.callerInstance.getName()}: Running ${this.installScript().join(
+            ' '
+          )}`
+        );
+        SpawnHelper.run(
+          this.callerInstance.getInstallationPath(),
+          this.installScript()
+        )
+          .then(async () => {
             console.log(
-              `${this.callerInstance.getName()}: Running ${this.installScript().join(
+              `${this.callerInstance.getName()}: Running ${(await this.runScript()).join(
                 ' '
               )}`
             );
-            SpawnHelper.run(
+            console.log('\x1b[0m');
+            SpawnHelper.start(
               this.callerInstance.getInstallationPath(),
-              this.installScript()
+              (await this.runScript())
             )
-              .then(() => {
+              .then(async ({ processId }: { processId: string }) => {
+                this.setStatus('up');
+                this.setContainerId(processId);
+                console.log('\x1b[32m');
                 console.log(
-                  `${this.callerInstance.getName()}: Running ${this.runScript().join(
-                    ' '
-                  )}`
+                  `Open http://localhost:${await this.getPortNumber()}/ in browser`
                 );
                 console.log('\x1b[0m');
-                SpawnHelper.start(
-                  this.callerInstance.getInstallationPath(),
-                  this.runScript()
-                )
-                  .then(({ processId }: { processId: string }) => {
-                    this.setStatus('up');
-                    this.setPortNumber(this.portNumber);
-                    this.setContainerId(processId);
-                    ports.push(this.portNumber);
-                    this.callerInstance.callerPlugin.gluePluginStore.set(
-                      'ports',
-                      ports
-                    );
-                    console.log('\x1b[32m');
-                    console.log(
-                      `Open http://localhost:${this.getPortNumber()}/ in browser`
-                    );
-                    console.log('\x1b[0m');
-                    return resolve(true);
-                  })
-                  .catch((e: any) => {
-                    return reject(e);
-                  });
+                return resolve(true);
               })
               .catch((e: any) => {
                 return reject(e);
@@ -147,28 +136,16 @@ export class PluginInstanceContainerController implements IContainerController {
           .catch((e: any) => {
             return reject(e);
           });
-      });
+      })
     }
   }
 
   async down() {
     if (this.getStatus() !== 'down') {
-      let ports =
-        this.callerInstance.callerPlugin.gluePluginStore.get('ports') || [];
       await new Promise(async (resolve, reject) => {
         SpawnHelper.stop(this.getContainerId())
           .then(() => {
             this.setStatus('down');
-            var index = ports.indexOf(this.getPortNumber());
-            if (index !== -1) {
-              ports.splice(index, 1);
-            }
-            this.callerInstance.callerPlugin.gluePluginStore.set(
-              'ports',
-              ports
-            );
-
-            this.setPortNumber(null);
             this.setContainerId(null);
             return resolve(true);
           })
