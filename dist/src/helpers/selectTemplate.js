@@ -44,11 +44,10 @@ var selectTemplate = function () { return __awaiter(void 0, void 0, void 0, func
         switch (_a.label) {
             case 0:
                 templates = ['next-gluestack-ts', 'next-tailwind-ts', 'next-ts'];
-                console.log('Select template:');
                 return [4, prompts({
                         type: 'select',
                         name: 'selectedOption',
-                        message: 'Select an option:',
+                        message: 'Select template:',
                         choices: templates,
                         initial: 0
                     })];

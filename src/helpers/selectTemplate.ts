@@ -2,11 +2,10 @@ const prompts = require('prompts');
 
 export const selectTemplate = async () => {
   const templates = ['next-gluestack-ts', 'next-tailwind-ts', 'next-ts'];
-  console.log('Select template:');
   const response = await prompts({
     type: 'select',
     name: 'selectedOption',
-    message: 'Select an option:',
+    message: 'Select template:',
     choices: templates,
     initial: 0,
   });
