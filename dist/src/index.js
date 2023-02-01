@@ -42,6 +42,7 @@ exports.__esModule = true;
 exports.GlueStackPlugin = void 0;
 var package_json_1 = __importDefault(require("../package.json"));
 var PluginInstance_1 = require("./PluginInstance");
+var selectTemplate_1 = require("./helpers/selectTemplate");
 var GlueStackPlugin = (function () {
     function GlueStackPlugin(app, gluePluginStore) {
         this.type = 'stateless';
@@ -63,17 +64,22 @@ var GlueStackPlugin = (function () {
         return this.type;
     };
     GlueStackPlugin.prototype.getTemplateFolderPath = function () {
-        return "".concat(process.cwd(), "/node_modules/").concat(this.getName(), "/template");
+        return "".concat(process.cwd(), "/node_modules/").concat(this.getName(), "/").concat(this.selectedTemplateFolderPath);
     };
     GlueStackPlugin.prototype.getInstallationPath = function (target) {
         return "./".concat(target);
     };
     GlueStackPlugin.prototype.runPostInstall = function (instanceName, target) {
         return __awaiter(this, void 0, void 0, function () {
+            var templateFolder;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, this.app.createPluginInstance(this, instanceName, this.getTemplateFolderPath(), target)];
+                    case 0: return [4, (0, selectTemplate_1.selectTemplate)()];
                     case 1:
+                        templateFolder = _a.sent();
+                        this.selectedTemplateFolderPath = templateFolder;
+                        return [4, this.app.createPluginInstance(this, instanceName, this.getTemplateFolderPath(), target)];
+                    case 2:
                         _a.sent();
                         return [2];
                 }
