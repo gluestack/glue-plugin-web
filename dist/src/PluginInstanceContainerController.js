@@ -58,6 +58,9 @@ var PluginInstanceContainerController = (function () {
     PluginInstanceContainerController.prototype.runScript = function () {
         return ["npm", "run", "dev", "--", "-p", this.getPortNumber()];
     };
+    PluginInstanceContainerController.prototype.buildScript = function () {
+        return ["npm", "run", "build"];
+    };
     PluginInstanceContainerController.prototype.getDockerJson = function () {
         return {};
     };
@@ -188,6 +191,12 @@ var PluginInstanceContainerController = (function () {
                 switch (_a.label) {
                     case 0: return [4, (0, create_dockerfile_1.generateDockerfile)(this.callerInstance.getInstallationPath())];
                     case 1:
+                        _a.sent();
+                        return [4, SpawnHelper.run(this.callerInstance.getInstallationPath(), this.installScript())];
+                    case 2:
+                        _a.sent();
+                        return [4, SpawnHelper.run(this.callerInstance.getInstallationPath(), this.buildScript())];
+                    case 3:
                         _a.sent();
                         return [2];
                 }
