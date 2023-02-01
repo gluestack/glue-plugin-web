@@ -26,7 +26,7 @@ export class PluginInstanceContainerController implements IContainerController {
     return this.callerInstance;
   }
 
-  getEnv() {}
+  getEnv() { }
 
   installScript() {
     return ['npm', 'install', '--save', '--legacy-peer-deps'];
@@ -34,6 +34,10 @@ export class PluginInstanceContainerController implements IContainerController {
 
   async runScript() {
     return ['npm', 'run', 'dev', '--', '-p', await this.getPortNumber()];
+  }
+
+  buildScript() {
+    return ["npm", "run", "build"];
   }
 
   getDockerJson() {
@@ -93,7 +97,7 @@ export class PluginInstanceContainerController implements IContainerController {
     return (this.dockerfile = dockerfile || null);
   }
 
-  getConfig(): any {}
+  getConfig(): any { }
 
   async up() {
     if (this.getStatus() !== 'up') {
@@ -158,5 +162,7 @@ export class PluginInstanceContainerController implements IContainerController {
 
   async build() {
     await generateDockerfile(this.callerInstance.getInstallationPath());
+    await SpawnHelper.run(this.callerInstance.getInstallationPath(), this.installScript());
+    await SpawnHelper.run(this.callerInstance.getInstallationPath(), this.buildScript());
   }
 }
