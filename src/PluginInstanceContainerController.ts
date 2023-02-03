@@ -26,7 +26,7 @@ export class PluginInstanceContainerController implements IContainerController {
     return this.callerInstance;
   }
 
-  getEnv() { }
+  getEnv() {}
 
   installScript() {
     return ['npm', 'install', '--save', '--legacy-peer-deps'];
@@ -37,7 +37,7 @@ export class PluginInstanceContainerController implements IContainerController {
   }
 
   buildScript() {
-    return ["npm", "run", "build"];
+    return ['npm', 'run', 'build'];
   }
 
   getDockerJson() {
@@ -47,7 +47,7 @@ export class PluginInstanceContainerController implements IContainerController {
   getStatus(): 'up' | 'down' {
     return this.status;
   }
-  
+
   //@ts-ignore
   async getPortNumber(returnDefault?: boolean) {
     return new Promise((resolve, reject) => {
@@ -55,12 +55,12 @@ export class PluginInstanceContainerController implements IContainerController {
         return resolve(this.portNumber);
       }
       let ports =
-        this.callerInstance.callerPlugin.gluePluginStore.get("ports") || [];
+        this.callerInstance.callerPlugin.gluePluginStore.get('ports') || [];
       DockerodeHelper.getPort(3100, ports)
         .then((port: number) => {
           this.setPortNumber(port);
-          ports.push(port);
-          this.callerInstance.callerPlugin.gluePluginStore.set("ports", ports);
+          if (port) ports.push(port);
+          this.callerInstance.callerPlugin.gluePluginStore.set('ports', ports);
           return resolve(this.portNumber);
         })
         .catch((e: any) => {
@@ -68,7 +68,6 @@ export class PluginInstanceContainerController implements IContainerController {
         });
     });
   }
-
 
   getContainerId(): string {
     return this.containerId;
@@ -80,8 +79,8 @@ export class PluginInstanceContainerController implements IContainerController {
   }
 
   setPortNumber(portNumber: number) {
-    this.callerInstance.gluePluginStore.set('port_number', portNumber || null);
-    return (this.portNumber = portNumber || null);
+    this.callerInstance.gluePluginStore.set('port_number', portNumber);
+    return (this.portNumber = portNumber);
   }
 
   setContainerId(containerId: string) {
@@ -97,7 +96,7 @@ export class PluginInstanceContainerController implements IContainerController {
     return (this.dockerfile = dockerfile || null);
   }
 
-  getConfig(): any { }
+  getConfig(): any {}
 
   async up() {
     if (this.getStatus() !== 'up') {
@@ -114,14 +113,14 @@ export class PluginInstanceContainerController implements IContainerController {
         )
           .then(async () => {
             console.log(
-              `${this.callerInstance.getName()}: Running ${(await this.runScript()).join(
-                ' '
-              )}`
+              `${this.callerInstance.getName()}: Running ${(
+                await this.runScript()
+              ).join(' ')}`
             );
             console.log('\x1b[0m');
             SpawnHelper.start(
               this.callerInstance.getInstallationPath(),
-              (await this.runScript())
+              await this.runScript()
             )
               .then(async ({ processId }: { processId: string }) => {
                 this.setStatus('up');
@@ -140,7 +139,7 @@ export class PluginInstanceContainerController implements IContainerController {
           .catch((e: any) => {
             return reject(e);
           });
-      })
+      });
     }
   }
 
@@ -162,7 +161,13 @@ export class PluginInstanceContainerController implements IContainerController {
 
   async build() {
     await generateDockerfile(this.callerInstance.getInstallationPath());
-    await SpawnHelper.run(this.callerInstance.getInstallationPath(), this.installScript());
-    await SpawnHelper.run(this.callerInstance.getInstallationPath(), this.buildScript());
+    await SpawnHelper.run(
+      this.callerInstance.getInstallationPath(),
+      this.installScript()
+    );
+    await SpawnHelper.run(
+      this.callerInstance.getInstallationPath(),
+      this.buildScript()
+    );
   }
 }
