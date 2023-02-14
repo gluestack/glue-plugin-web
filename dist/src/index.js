@@ -73,7 +73,7 @@ var GlueStackPlugin = (function () {
     };
     GlueStackPlugin.prototype.runPostInstall = function (instanceName, target) {
         return __awaiter(this, void 0, void 0, function () {
-            var templateFolder, instance, routerFile, packageJSONFile;
+            var templateFolder, instance, routerFile, pluginPackage, rootPackage;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4, (0, select_template_1.selectTemplate)()];
@@ -90,9 +90,13 @@ var GlueStackPlugin = (function () {
                         return [4, (0, rewrite_file_1.reWriteFile)(routerFile, instanceName, 'INSTANCENAME')];
                     case 3:
                         _a.sent();
-                        packageJSONFile = "".concat(process.cwd(), "/package.json");
-                        return [4, (0, update_workspaces_1.updateWorkspaces)(packageJSONFile, instance.getInstallationPath())];
+                        pluginPackage = "".concat(instance.getInstallationPath(), "/package.json");
+                        return [4, (0, rewrite_file_1.reWriteFile)(pluginPackage, instanceName, 'INSTANCENAME')];
                     case 4:
+                        _a.sent();
+                        rootPackage = "".concat(process.cwd(), "/package.json");
+                        return [4, (0, update_workspaces_1.updateWorkspaces)(rootPackage, instance.getInstallationPath())];
+                    case 5:
                         _a.sent();
                         return [2];
                 }

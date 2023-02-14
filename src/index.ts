@@ -76,8 +76,13 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
     const routerFile = `${instance.getInstallationPath()}/router.js`;
     await reWriteFile(routerFile, instanceName, 'INSTANCENAME');
 
-    const packageJSONFile = `${process.cwd()}/package.json`;
-    await updateWorkspaces(packageJSONFile, instance.getInstallationPath());
+    // update package.json'S name index with the new instance name
+    const pluginPackage = `${instance.getInstallationPath()}/package.json`;
+    await reWriteFile(pluginPackage, instanceName, 'INSTANCENAME');
+
+    // update root package.json's workspaces with the new instance name
+    const rootPackage = `${process.cwd()}/package.json`;
+    await updateWorkspaces(rootPackage, instance.getInstallationPath());
   }
 
   createInstance(
