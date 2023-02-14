@@ -42,7 +42,9 @@ exports.__esModule = true;
 exports.GlueStackPlugin = void 0;
 var package_json_1 = __importDefault(require("../package.json"));
 var PluginInstance_1 = require("./PluginInstance");
-var selectTemplate_1 = require("./helpers/selectTemplate");
+var rewrite_file_1 = require("./helpers/rewrite-file");
+var select_template_1 = require("./helpers/select-template");
+var update_workspaces_1 = require("./helpers/update-workspaces");
 var GlueStackPlugin = (function () {
     function GlueStackPlugin(app, gluePluginStore) {
         this.type = 'stateless';
@@ -71,15 +73,26 @@ var GlueStackPlugin = (function () {
     };
     GlueStackPlugin.prototype.runPostInstall = function (instanceName, target) {
         return __awaiter(this, void 0, void 0, function () {
-            var templateFolder;
+            var templateFolder, instance, routerFile, packageJSONFile;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, (0, selectTemplate_1.selectTemplate)()];
+                    case 0: return [4, (0, select_template_1.selectTemplate)()];
                     case 1:
                         templateFolder = _a.sent();
                         this.selectedTemplateFolderPath = templateFolder;
                         return [4, this.app.createPluginInstance(this, instanceName, this.getTemplateFolderPath(), target)];
                     case 2:
+                        instance = _a.sent();
+                        if (!instance) {
+                            return [2];
+                        }
+                        routerFile = "".concat(instance.getInstallationPath(), "/router.js");
+                        return [4, (0, rewrite_file_1.reWriteFile)(routerFile, instanceName, 'INSTANCENAME')];
+                    case 3:
+                        _a.sent();
+                        packageJSONFile = "".concat(process.cwd(), "/package.json");
+                        return [4, (0, update_workspaces_1.updateWorkspaces)(packageJSONFile, instance.getInstallationPath())];
+                    case 4:
                         _a.sent();
                         return [2];
                 }

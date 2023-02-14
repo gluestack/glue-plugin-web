@@ -1,4 +1,4 @@
-//@ts-ignore
+// @ts-ignore
 import packageJSON from '../package.json';
 import { PluginInstance } from './PluginInstance';
 import IApp from '@gluestack/framework/types/app/interface/IApp';
@@ -7,8 +7,12 @@ import IInstance from '@gluestack/framework/types/plugin/interface/IInstance';
 import ILifeCycle from '@gluestack/framework/types/plugin/interface/ILifeCycle';
 import IManagesInstances from '@gluestack/framework/types/plugin/interface/IManagesInstances';
 import IGlueStorePlugin from '@gluestack/framework/types/store/interface/IGluePluginStore';
-import { selectTemplate } from './helpers/selectTemplate';
-//Do not edit the name of this class
+
+import { reWriteFile } from './helpers/rewrite-file';
+import { selectTemplate } from './helpers/select-template';
+import { updateWorkspaces } from './helpers/update-workspaces';
+
+// Do not edit the name of this class
 export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
   app: IApp;
   instances: IInstance[];
@@ -46,7 +50,6 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
     return `${process.cwd()}/node_modules/${this.getName()}/${
       this.selectedTemplateFolderPath
     }`;
-    // return `${process.cwd()}/node_modules/${this.getName()}/${templateFolder}`;
   }
 
   getInstallationPath(target: string): string {
@@ -56,12 +59,25 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
   async runPostInstall(instanceName: string, target: string) {
     const templateFolder = await selectTemplate();
     this.selectedTemplateFolderPath = templateFolder;
-    await this.app.createPluginInstance(
-      this,
-      instanceName,
-      this.getTemplateFolderPath(),
-      target
-    );
+
+    const instance: PluginInstance =
+      await this.app.createPluginInstance(
+        this,
+        instanceName,
+        this.getTemplateFolderPath(),
+        target
+      );
+
+    if (!instance) {
+      return;
+    }
+
+    // rewrite router.js with the installed instance name
+    const routerFile = `${instance.getInstallationPath()}/router.js`;
+    await reWriteFile(routerFile, instanceName, 'INSTANCENAME');
+
+    const packageJSONFile = `${process.cwd()}/package.json`;
+    await updateWorkspaces(packageJSONFile, instance.getInstallationPath());
   }
 
   createInstance(

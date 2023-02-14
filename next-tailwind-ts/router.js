@@ -10,9 +10,12 @@
  */
 module.exports = () => [
   {
-    path: '/web',
+    server_name: "INSTANCENAME"
+  },
+  {
+    path: '/(.*)',
     proxy: {
-      path: '/',
+      path: '/$1',
     },
     size_in_mb: '50',
   },
