@@ -22,8 +22,7 @@
   "main": "dist/src/index.js",
   "scripts": {
     "plugin-dev": "tsc --watch",
-    "plugin-build": "tsc",
-    "prepare": "tsc"
+    "plugin-build": "tsc"
   },
   "devDependencies": {
     "@gluestack/framework": "^0.0.14",
