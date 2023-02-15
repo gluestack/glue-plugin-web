@@ -10,7 +10,8 @@ import IGlueStorePlugin from '@gluestack/framework/types/store/interface/IGluePl
 
 import { reWriteFile } from './helpers/rewrite-file';
 import { selectTemplate } from './helpers/select-template';
-import { updateWorkspaces } from './helpers/update-workspaces';
+
+const { Workspaces } = require("@gluestack/helpers");
 
 // Do not edit the name of this class
 export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
@@ -47,9 +48,8 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
 
   // @ts-ignore
   getTemplateFolderPath(): string {
-    return `${process.cwd()}/node_modules/${this.getName()}/${
-      this.selectedTemplateFolderPath
-    }`;
+    return `${process.cwd()}/node_modules/${this.getName()}/${this.selectedTemplateFolderPath
+      }`;
   }
 
   getInstallationPath(target: string): string {
@@ -82,7 +82,7 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
 
     // update root package.json's workspaces with the new instance name
     const rootPackage = `${process.cwd()}/package.json`;
-    await updateWorkspaces(rootPackage, instance.getInstallationPath());
+    await Workspaces.append(rootPackage, instance.getInstallationPath());
   }
 
   createInstance(
