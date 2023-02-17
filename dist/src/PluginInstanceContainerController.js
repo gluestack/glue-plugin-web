@@ -37,8 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.PluginInstanceContainerController = void 0;
-var _a = require('@gluestack/helpers'), SpawnHelper = _a.SpawnHelper, DockerodeHelper = _a.DockerodeHelper;
-var os = require('os');
+var helpers_1 = require("@gluestack/helpers");
 var PluginInstanceContainerController = (function () {
     function PluginInstanceContainerController(app, callerInstance) {
         this.status = 'down';
@@ -90,7 +89,7 @@ var PluginInstanceContainerController = (function () {
                             return resolve(_this.portNumber);
                         }
                         var ports = _this.callerInstance.callerPlugin.gluePluginStore.get("ports") || [];
-                        DockerodeHelper.getPort(3100, ports)
+                        helpers_1.DockerodeHelper.getPort(3100, ports)
                             .then(function (port) {
                             _this.setPortNumber(port);
                             ports.push(port);
@@ -149,10 +148,10 @@ var PluginInstanceContainerController = (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, SpawnHelper.run(this.callerInstance.getInstallationPath(), this.installScript())];
+                    case 0: return [4, helpers_1.SpawnHelper.run(this.callerInstance.getInstallationPath(), this.installScript())];
                     case 1:
                         _a.sent();
-                        return [4, SpawnHelper.run(this.callerInstance.getInstallationPath(), this.buildScript())];
+                        return [4, helpers_1.SpawnHelper.run(this.callerInstance.getInstallationPath(), this.buildScript())];
                     case 2:
                         _a.sent();
                         return [2];

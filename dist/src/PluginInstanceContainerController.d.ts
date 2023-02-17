@@ -1,5 +1,5 @@
-import IApp from '@gluestack/framework/types/app/interface/IApp';
-import IInstance from '@gluestack/framework/types/plugin/interface/IInstance';
+import IApp from "@gluestack/framework/types/app/interface/IApp";
+import IInstance from "@gluestack/framework/types/plugin/interface/IInstance";
 import IContainerController, { IRoutes } from "@gluestack/framework/types/plugin/interface/IContainerController";
 export declare class PluginInstanceContainerController implements IContainerController {
     app: IApp;
