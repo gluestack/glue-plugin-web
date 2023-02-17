@@ -14,22 +14,7 @@ export declare class PluginInstanceContainerController implements IContainerCont
     installScript(): string[];
     runScript(): Promise<string[]>;
     buildScript(): string[];
-    getDockerJson(): Promise<{
-        Image: string;
-        HostConfig: {
-            PortBindings: {
-                "9000/tcp": {
-                    HostPort: string;
-                }[];
-            };
-            Binds: string[];
-        };
-        ExposedPorts: {
-            "9000/tcp": {};
-        };
-        Cmd: string[];
-        WorkingDir: string;
-    }>;
+    getDockerJson(): Promise<{}>;
     getStatus(): 'up' | 'down';
     getPortNumber(returnDefault?: boolean): Promise<unknown>;
     getContainerId(): string;

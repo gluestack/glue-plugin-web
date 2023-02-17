@@ -39,7 +39,6 @@ exports.__esModule = true;
 exports.PluginInstanceContainerController = void 0;
 var _a = require('@gluestack/helpers'), SpawnHelper = _a.SpawnHelper, DockerodeHelper = _a.DockerodeHelper;
 var os = require('os');
-var path_1 = require("path");
 var PluginInstanceContainerController = (function () {
     function PluginInstanceContainerController(app, callerInstance) {
         this.status = 'down';
@@ -74,50 +73,8 @@ var PluginInstanceContainerController = (function () {
     };
     PluginInstanceContainerController.prototype.getDockerJson = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var installCmd, runCmd, Cmd, Binds, json_data, _a;
-            var _b, _c, _d, _e;
-            return __generator(this, function (_f) {
-                switch (_f.label) {
-                    case 0:
-                        installCmd = this.installScript();
-                        return [4, this.runScript()];
-                    case 1:
-                        runCmd = _f.sent();
-                        Cmd = installCmd.join(' ') + ' && ' + runCmd.join(' ');
-                        Binds = [
-                            "".concat(process.cwd(), ":/gluestack"),
-                        ];
-                        _b = {
-                            Image: "node:lts"
-                        };
-                        _c = {};
-                        _d = {};
-                        _a = "9000/tcp";
-                        _e = {};
-                        return [4, this.getPortNumber()];
-                    case 2:
-                        json_data = (_b.HostConfig = (_c.PortBindings = (_d[_a] = [
-                            (_e.HostPort = (_f.sent()).toString(),
-                                _e)
-                        ],
-                            _d),
-                            _c.Binds = Binds,
-                            _c),
-                            _b.ExposedPorts = {
-                                "9000/tcp": {}
-                            },
-                            _b.Cmd = [
-                                "sh",
-                                "-c",
-                                Cmd
-                            ],
-                            _b.WorkingDir = (0, path_1.join)('/gluestack', this.callerInstance.getInstallationPath()),
-                            _b);
-                        if (os.platform() === 'win32') {
-                            json_data.WorkingDir = json_data.WorkingDir.replaceAll('\\', '/');
-                        }
-                        return [2, json_data];
-                }
+            return __generator(this, function (_a) {
+                return [2, {}];
             });
         });
     };
@@ -168,57 +125,11 @@ var PluginInstanceContainerController = (function () {
     PluginInstanceContainerController.prototype.getConfig = function () { };
     PluginInstanceContainerController.prototype.up = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
-                            var _a, _b, _c;
-                            var _this = this;
-                            return __generator(this, function (_d) {
-                                switch (_d.label) {
-                                    case 0:
-                                        _b = (_a = DockerodeHelper).up;
-                                        return [4, this.getDockerJson()];
-                                    case 1:
-                                        _c = [_d.sent()];
-                                        return [4, this.getEnv()];
-                                    case 2:
-                                        _c = _c.concat([_d.sent()]);
-                                        return [4, this.getPortNumber()];
-                                    case 3:
-                                        _b.apply(_a, _c.concat([_d.sent(), this.callerInstance.getName()]))
-                                            .then(function (_a) {
-                                            var status = _a.status, containerId = _a.containerId;
-                                            return __awaiter(_this, void 0, void 0, function () {
-                                                var _b, _c, _d;
-                                                return __generator(this, function (_e) {
-                                                    switch (_e.label) {
-                                                        case 0:
-                                                            this.setStatus(status);
-                                                            this.setContainerId(containerId);
-                                                            console.log("\x1b[32m");
-                                                            _c = (_b = console).log;
-                                                            _d = "API: http://localhost:".concat;
-                                                            return [4, this.getPortNumber()];
-                                                        case 1:
-                                                            _c.apply(_b, [_d.apply("API: http://localhost:", [_e.sent()])]);
-                                                            console.log("\x1b[0m", "\x1b[36m");
-                                                            console.log("\x1b[0m");
-                                                            return [2, resolve(true)];
-                                                    }
-                                                });
-                                            });
-                                        })["catch"](function (e) {
-                                            console.log(">> catch:", e);
-                                            return reject(e);
-                                        })["catch"](function (e) {
-                                            console.log(">> catch 2:", e);
-                                            return reject(e);
-                                        });
-                                        return [2];
-                                }
-                            });
-                        }); })];
+                    case 0:
+                        this.setStatus('up');
+                        return [4, this.getPortNumber()];
                     case 1:
                         _a.sent();
                         return [2];
@@ -228,27 +139,9 @@ var PluginInstanceContainerController = (function () {
     };
     PluginInstanceContainerController.prototype.down = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
-                            var _this = this;
-                            return __generator(this, function (_a) {
-                                DockerodeHelper.down(this.getContainerId(), this.callerInstance.getName())
-                                    .then(function () {
-                                    _this.setStatus("down");
-                                    _this.setContainerId(null);
-                                    return resolve(true);
-                                })["catch"](function (e) {
-                                    return reject(e);
-                                });
-                                return [2];
-                            });
-                        }); })];
-                    case 1:
-                        _a.sent();
-                        return [2];
-                }
+                this.setStatus('down');
+                return [2];
             });
         });
     };

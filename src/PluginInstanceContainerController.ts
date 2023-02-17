@@ -46,42 +46,7 @@ export class PluginInstanceContainerController implements IContainerController {
   }
 
   async getDockerJson() {
-    const installCmd = this.installScript();
-    const runCmd = await this.runScript();
-    const Cmd = installCmd.join(' ') + ' && ' + runCmd.join(' ');
-
-    const Binds = [
-      `${process.cwd()}:/gluestack`,
-    ];
-
-    const json_data = {
-      Image: "node:lts",
-      HostConfig: {
-        PortBindings: {
-          "9000/tcp": [
-            {
-              HostPort: (await this.getPortNumber()).toString(),
-            },
-          ]
-        },
-        Binds: Binds
-      },
-      ExposedPorts: {
-        "9000/tcp": {}
-      },
-      Cmd: [
-        "sh",
-        "-c",
-        Cmd
-      ],
-      WorkingDir: join('/gluestack', this.callerInstance.getInstallationPath())
-    };
-
-    if (os.platform() === 'win32') {
-      //@ts-ignore
-      json_data.WorkingDir = json_data.WorkingDir.replaceAll('\\', '/');
-    }
-    return json_data;
+    return {};
   }
 
   getStatus(): 'up' | 'down' {
@@ -139,55 +104,12 @@ export class PluginInstanceContainerController implements IContainerController {
   getConfig(): any { }
 
   async up() {
-    await new Promise(async (resolve, reject) => {
-      DockerodeHelper.up(
-        await this.getDockerJson(),
-        await this.getEnv(),
-        await this.getPortNumber(),
-        this.callerInstance.getName(),
-      )
-        .then(
-          async ({
-            status,
-            containerId,
-          }: {
-            status: "up" | "down";
-            containerId: string;
-          }) => {
-            this.setStatus(status);
-            this.setContainerId(containerId);
-
-            console.log("\x1b[32m");
-            console.log(`API: http://localhost:${await this.getPortNumber()}`);
-            console.log("\x1b[0m", "\x1b[36m");
-            console.log("\x1b[0m");
-
-            return resolve(true);
-          },
-        )
-        .catch((e: any) => {
-          console.log(">> catch:", e);
-          return reject(e);
-        })
-        .catch((e: any) => {
-          console.log(">> catch 2:", e);
-          return reject(e);
-        });
-    });
+    this.setStatus('up');
+    await this.getPortNumber();
   }
 
   async down() {
-    await new Promise(async (resolve, reject) => {
-      DockerodeHelper.down(this.getContainerId(), this.callerInstance.getName())
-        .then(() => {
-          this.setStatus("down");
-          this.setContainerId(null);
-          return resolve(true);
-        })
-        .catch((e: any) => {
-          return reject(e);
-        });
-    });
+    this.setStatus('down');
   }
 
   async build() {
