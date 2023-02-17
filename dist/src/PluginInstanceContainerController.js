@@ -38,6 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.PluginInstanceContainerController = void 0;
 var _a = require('@gluestack/helpers'), SpawnHelper = _a.SpawnHelper, DockerodeHelper = _a.DockerodeHelper;
+var os = require('os');
 var path_1 = require("path");
 var PluginInstanceContainerController = (function () {
     function PluginInstanceContainerController(app, callerInstance) {
@@ -73,7 +74,7 @@ var PluginInstanceContainerController = (function () {
     };
     PluginInstanceContainerController.prototype.getDockerJson = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var installCmd, runCmd, Cmd, Binds, _a;
+            var installCmd, runCmd, Cmd, Binds, json_data, _a;
             var _b, _c, _d, _e;
             return __generator(this, function (_f) {
                 switch (_f.label) {
@@ -94,7 +95,8 @@ var PluginInstanceContainerController = (function () {
                         _a = "9000/tcp";
                         _e = {};
                         return [4, this.getPortNumber()];
-                    case 2: return [2, (_b.HostConfig = (_c.PortBindings = (_d[_a] = [
+                    case 2:
+                        json_data = (_b.HostConfig = (_c.PortBindings = (_d[_a] = [
                             (_e.HostPort = (_f.sent()).toString(),
                                 _e)
                         ],
@@ -110,7 +112,11 @@ var PluginInstanceContainerController = (function () {
                                 Cmd
                             ],
                             _b.WorkingDir = (0, path_1.join)('/gluestack', this.callerInstance.getInstallationPath()),
-                            _b)];
+                            _b);
+                        if (os.platform() === 'win32') {
+                            json_data.WorkingDir = json_data.WorkingDir.replaceAll('\\', '/');
+                        }
+                        return [2, json_data];
                 }
             });
         });
