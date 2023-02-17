@@ -1,5 +1,6 @@
 
 const { SpawnHelper, DockerodeHelper } = require('@gluestack/helpers');
+const os = require('os');
 
 import { join } from 'path';
 import IApp from '@gluestack/framework/types/app/interface/IApp';
@@ -53,7 +54,7 @@ export class PluginInstanceContainerController implements IContainerController {
       `${process.cwd()}:/gluestack`,
     ];
 
-    return {
+    const json_data = {
       Image: "node:lts",
       HostConfig: {
         PortBindings: {
@@ -75,6 +76,12 @@ export class PluginInstanceContainerController implements IContainerController {
       ],
       WorkingDir: join('/gluestack', this.callerInstance.getInstallationPath())
     };
+
+    if (os.platform() === 'win32') {
+      //@ts-ignore
+      json_data.WorkingDir = json_data.WorkingDir.replaceAll('\\', '/');
+    }
+    return json_data;
   }
 
   getStatus(): 'up' | 'down' {
