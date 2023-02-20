@@ -1,7 +1,7 @@
 FROM node:lts
 
 # Install your app
-WORKDIR /gluestack/web
+WORKDIR /gluestack/{INSTANCE_NAME}
 COPY package*.json ./
 RUN ["npm", "install"]
 COPY . .
