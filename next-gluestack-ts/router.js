@@ -16,6 +16,7 @@ module.exports = () => [
     path: '/(.*)',
     proxy: {
       path: '/$1',
+      instance: "INSTANCENAME:9000",
     },
     size_in_mb: '50',
   },
