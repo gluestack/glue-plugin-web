@@ -11,7 +11,7 @@ import IGlueStorePlugin from '@gluestack/framework/types/store/interface/IGluePl
 import { reWriteFile } from './helpers/rewrite-file';
 import { selectTemplate } from './helpers/select-template';
 
-const { Workspaces } = require("@gluestack/helpers");
+import { Workspaces } from "@gluestack/helpers";
 
 // Do not edit the name of this class
 export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
