@@ -1,5 +1,5 @@
 {
-  "name": "INSTANCENAME",
+  "name": "@project/INSTANCENAME",
   "version": "0.1.0",
   "description": "Next app configured with tailwind",
   "private": true,
