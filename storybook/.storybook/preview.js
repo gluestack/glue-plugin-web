@@ -14,7 +14,7 @@ export const parameters = {
       method: 'alphabetical',
       order: [
         'Web Plugin',
-        ['Getting Started', 'How to Install'],
+        ['Getting Started', 'Requirements', 'How to Install'],
       ]
     },
   },
