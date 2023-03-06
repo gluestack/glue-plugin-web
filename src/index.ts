@@ -11,7 +11,7 @@ import IGlueStorePlugin from '@gluestack/framework/types/store/interface/IGluePl
 import { reWriteFile } from './helpers/rewrite-file';
 import { selectTemplate } from './helpers/select-template';
 
-import { Workspaces } from "@gluestack/helpers";
+import { removeSpecialChars, Workspaces } from "@gluestack/helpers";
 
 // Do not edit the name of this class
 export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
@@ -73,7 +73,7 @@ export class GlueStackPlugin implements IPlugin, IManagesInstances, ILifeCycle {
 
     // rewrite router.js with the installed instance name
     const routerFile = `${instance.getInstallationPath()}/router.js`;
-    await reWriteFile(routerFile, instanceName, 'INSTANCENAME');
+    await reWriteFile(routerFile, removeSpecialChars(instanceName), 'INSTANCENAME');
 
     // update package.json'S name index with the new instance name
     const pluginPackage = `${instance.getInstallationPath()}/package.json`;
