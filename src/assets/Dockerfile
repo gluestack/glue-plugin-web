@@ -3,6 +3,7 @@ FROM node:lts
 # Install your app
 WORKDIR /gluestack/{INSTANCE_NAME}
 COPY package*.json ./
+RUN ["npm", "config", "set", "legacy-peer-deps", "true"]
 RUN ["npm", "install"]
 COPY . .
 EXPOSE 9000
