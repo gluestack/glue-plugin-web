@@ -38,7 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.GlueStackPlugin = void 0;
 var package_json_1 = __importDefault(require("../package.json"));
 var PluginInstance_1 = require("./PluginInstance");
@@ -57,10 +57,10 @@ var GlueStackPlugin = (function () {
     GlueStackPlugin.prototype.destroy = function () {
     };
     GlueStackPlugin.prototype.getName = function () {
-        return package_json_1["default"].name;
+        return package_json_1.default.name;
     };
     GlueStackPlugin.prototype.getVersion = function () {
-        return package_json_1["default"].version;
+        return package_json_1.default.version;
     };
     GlueStackPlugin.prototype.getType = function () {
         return this.type;

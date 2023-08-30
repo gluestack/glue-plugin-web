@@ -15,7 +15,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "start:prod": "next start"
   },
   "dependencies": {
     "@gluestack/design-system": "^0.1.0-alpha.15",

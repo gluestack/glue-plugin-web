@@ -38,12 +38,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.reWriteFile = void 0;
 var fs_1 = __importDefault(require("fs"));
 var util_1 = __importDefault(require("util"));
-var readFile = util_1["default"].promisify(fs_1["default"].readFile);
-var writeFile = util_1["default"].promisify(fs_1["default"].writeFile);
+var readFile = util_1.default.promisify(fs_1.default.readFile);
+var writeFile = util_1.default.promisify(fs_1.default.writeFile);
 var reWriteFile = function (filePath, db_Name, defaultVar) {
     if (defaultVar === void 0) { defaultVar = 'my_first_db'; }
     return __awaiter(void 0, void 0, void 0, function () {
